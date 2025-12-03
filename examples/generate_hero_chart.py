@@ -133,7 +133,8 @@ def train_run(name, optimizer_cls, model_args, train_loader, device, steps=200, 
         _, loss = model(x, targets=y)
         loss.backward()
         
-        if name == "Cruxy (Meta3)":
+        # CRITICAL FIX: Pass loss to ALL Cruxy variants so the Controller can see curvature.
+        if "Cruxy" in name:
             optimizer.step(loss=loss.item())
         else:
             optimizer.step()
@@ -180,8 +181,9 @@ def main():
     # REFINED TO PERFECTION:
     # - Increased LR to 3e-4 (Lion is aggressive, but Meta3 can handle it)
     # - Enabled Gradient Centralization (use_gc=True) to smooth the landscape for the sign update.
+    # - Explicit Betas: Lion needs (0.9, 0.99) to be agile. Default (0.9, 0.999) is too slow for it.
     losses_lion = train_run("Cruxy (Meta-Lion v2)", CruxyOptimizer, model_args, loader, device, steps=steps,
-                            lr=3e-4, mode="meta3", use_lion=True, use_gc=True, weight_decay=0.1)
+                            lr=3e-4, mode="meta3", use_lion=True, use_gc=True, weight_decay=0.1, betas=(0.9, 0.99))
 
     # 4. Plot
     print("Generating Hero Chart...")
