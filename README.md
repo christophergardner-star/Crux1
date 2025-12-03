@@ -11,12 +11,17 @@
 
 The Cruxy Stability Engine is an adaptive optimization framework for neural network training, implementing the algorithms described in the Axiom Forge Systems Ltd White Paper (v2.0 + Meta-Cruxy 3.0).
 
-## 🚀 Verified Performance
-**Runs on 4GB VRAM GPUs**
-- **Model:** TinyLlama-1.1B (Float16 + LoRA)
-- **Optimizer:** Cruxy Meta-Lion
-- **Result:** Converged in 26s (Loss 5.0 -> 0.0003) on GTX 1650-class hardware.
-- **Demo:** `python examples/demo_tinyllama_4gb.py`
+## 🚀 Verified Performance (4GB VRAM)
+The following models have been verified to train on consumer hardware (GTX 1650, 4GB VRAM) using **Cruxy Meta-Lion** + LoRA.
+
+| Model | Params | Config | Status | Demo Script |
+|-------|--------|--------|--------|-------------|
+| **TinyLlama** | 1.1B | Float16 + LoRA | ✅ Verified | `examples/demo_tinyllama_4gb.py` |
+| **Gemma** | 2B | 4-bit + LoRA | ✅ Verified | `examples/demo_gemma2b_4gb.py` |
+| **Phi-2** | 2.7B | 4-bit + LoRA | ✅ Verified | `examples/demo_phi2_4gb.py` |
+| **Qwen 2.5** | 1.5B | Float16 + LoRA | ✅ Verified | *Verified in v2.0* |
+
+*Note: 4-bit quantization requires `bitsandbytes`. Without it, models >1.5B may require CPU offloading.*
 
 ## 🏆 Benchmark Results (Shakespeare GPT)
 *Verified on NVIDIA GPU (Dec 2025)*
