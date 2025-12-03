@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/img/logo.png" alt="Axiom Forge Systems Logo" width="300"/>
+</p>
+
 # Cruxy Stability Engine SDK
 
 ![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)
