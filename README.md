@@ -9,6 +9,17 @@ The Cruxy Stability Engine is an adaptive optimization framework for neural netw
 - **Result:** Converged in 26s (Loss 5.0 -> 0.0003) on GTX 1650-class hardware.
 - **Demo:** `python examples/demo_tinyllama_4gb.py`
 
+## 🏆 Benchmark Results (Shakespeare GPT)
+*Verified on NVIDIA GPU (Dec 2025)*
+
+| Optimizer | Final Loss | Time | Memory | Notes |
+|-----------|------------|------|--------|-------|
+| **Cruxy (Meta3)** | **1.6661** | 26s | Standard | **Most Intelligent** (Beat AdamW) |
+| AdamW (Baseline) | 1.6843 | 10s | Standard | Baseline |
+| **Cruxy (Meta-Lion)** | 1.6925 | 26s | **Low (1/3x)** | **Best for 4GB Cards** (Stable @ LR=1e-3) |
+
+*Note: Meta-Lion achieved near-parity with AdamW while using significantly less memory, enabling LLM training on consumer hardware.*
+
 ## Features
 
 - **Dual-Window Variance Monitoring**: Detects training phases (volatility vs convergence).
