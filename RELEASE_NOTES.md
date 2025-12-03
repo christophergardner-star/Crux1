@@ -6,7 +6,7 @@
 ### 🚀 Major Breakthroughs
 *   **Cluster Ready (Experimental):** Added `compile=True` support for `torch.compile` (Triton/Inductor). *Note: This feature is currently untested on large-scale clusters.*
 *   **Meta-Lion Unleashed:** Tuned to match AdamW performance (Loss 1.66 vs 1.68) while using **1/3rd the memory**.
-*   **Expanded Model Support:** Added verified demos for **Phi-2 (2.7B)** and **Gemma (2B)** on 4GB VRAM hardware.
+*   **Expanded Model Support:** Added demos for **Phi-2 (2.7B)** and **Gemma (2B)** on 4GB VRAM hardware. *Note: These demos are currently untested.*
 *   **Intelligence Fix:** Corrected Phase Modulation logic in `MetaCruxyController`, resulting in significantly lower loss.
 *   **Memory Optimization:** Fixed a memory leak in Lion mode, reducing VRAM footprint by 50%.
 

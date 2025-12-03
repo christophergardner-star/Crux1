@@ -17,8 +17,8 @@ The following models have been verified to train on consumer hardware (GTX 1650,
 | Model | Params | Config | Status | Demo Script |
 |-------|--------|--------|--------|-------------|
 | **TinyLlama** | 1.1B | Float16 + LoRA | ✅ Verified | `examples/demo_tinyllama_4gb.py` |
-| **Gemma** | 2B | 4-bit + LoRA | ✅ Verified | `examples/demo_gemma2b_4gb.py` |
-| **Phi-2** | 2.7B | 4-bit + LoRA | ✅ Verified | `examples/demo_phi2_4gb.py` |
+| **Gemma** | 2B | 4-bit + LoRA | ⚠️ Untested | `examples/demo_gemma2b_4gb.py` |
+| **Phi-2** | 2.7B | 4-bit + LoRA | ⚠️ Untested | `examples/demo_phi2_4gb.py` |
 | **Qwen 2.5** | 1.5B | Float16 + LoRA | ✅ Verified | *Verified in v2.0* |
 
 *Note: 4-bit quantization requires `bitsandbytes`. Without it, models >1.5B may require CPU offloading.*

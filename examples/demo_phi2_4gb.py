@@ -7,6 +7,7 @@ from cruxy import CruxyOptimizer
 
 def main():
     print("--- Axiom Forge Systems: Phi-2 (2.7B) 4GB VRAM Demo ---")
+    print("WARNING: This demo is UNTESTED. It may require adjustments for your specific hardware.")
     print("Note: Phi-2 is 2.7B params. This requires aggressive offloading or quantization on 4GB cards.")
     
     model_id = "microsoft/phi-2"

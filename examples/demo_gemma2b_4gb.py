@@ -7,6 +7,7 @@ from cruxy import CruxyOptimizer
 
 def main():
     print("--- Axiom Forge Systems: Gemma 2B 4GB VRAM Demo ---")
+    print("WARNING: This demo is UNTESTED. It may require adjustments for your specific hardware.")
     print("Note: Requires HuggingFace Login (huggingface-cli login) for gated access.")
     
     model_id = "google/gemma-2b"
