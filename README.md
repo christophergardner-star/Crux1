@@ -2,6 +2,9 @@
   <img src="docs/img/logo.png" alt="Axiom Forge Systems Logo" width="300"/>
 </p>
 
+> **Train 1.5B parameter models on a 4GB GPU. No scheduler tuning required.**  
+> *White paper available on request.*
+
 # Cruxy Stability Engine SDK
 
 ![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)
@@ -17,9 +20,9 @@ The following models have been verified to train on consumer hardware (GTX 1650,
 | Model | Params | Config | Status | Demo Script |
 |-------|--------|--------|--------|-------------|
 | **TinyLlama** | 1.1B | Float16 + LoRA | ✅ Verified | `examples/demo_tinyllama_4gb.py` |
+| **Qwen 2.5** | 1.5B | Float16 + LoRA | ✅ Verified | `examples/demo_qwen_4gb.py` |
 | **Gemma** | 2B | 4-bit + LoRA | ⚠️ Untested | `examples/demo_gemma2b_4gb.py` |
 | **Phi-2** | 2.7B | 4-bit + LoRA | ⚠️ Untested | `examples/demo_phi2_4gb.py` |
-| **Qwen 2.5** | 1.5B | Float16 + LoRA | ✅ Verified | *Verified in v2.0* |
 
 *Note: 4-bit quantization requires `bitsandbytes`. Without it, models >1.5B may require CPU offloading.*
 
@@ -104,6 +107,7 @@ trainer.train()
 1.  **stability_v1**: Baseline dual-window variance monitoring with PD control.
 2.  **stability_v2**: Adds curvature adaptation, gamma-norm variance, and predictive clipping.
 3.  **meta3**: Adds meta-controller for schedule-free training (Recommended).
+4.  **Meta-Lion**: Activate by setting `mode="meta3"` and `use_lion=True`. Combines the memory efficiency of Lion with the stability of the Meta3 controller.
 
 ## Testing
 
