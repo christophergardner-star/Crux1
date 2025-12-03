@@ -177,10 +177,11 @@ def main():
                              lr=5e-3, mode="meta3", weight_decay=0.1, decoupled_weight_decay=True, use_nesterov=True)
     
     # 3. Run Cruxy Meta-Lion (The Secret Weapon)
-    # Lion typically needs 3x-10x lower LR than Adam. 
-    # But Meta3 should handle it. We'll start at 1e-4 to be safe/fair for Lion mechanics.
-    losses_lion = train_run("Cruxy (Meta-Lion)", CruxyOptimizer, model_args, loader, device, steps=steps,
-                            lr=1e-4, mode="meta3", use_lion=True, weight_decay=0.1)
+    # REFINED TO PERFECTION:
+    # - Increased LR to 3e-4 (Lion is aggressive, but Meta3 can handle it)
+    # - Enabled Gradient Centralization (use_gc=True) to smooth the landscape for the sign update.
+    losses_lion = train_run("Cruxy (Meta-Lion v2)", CruxyOptimizer, model_args, loader, device, steps=steps,
+                            lr=3e-4, mode="meta3", use_lion=True, use_gc=True, weight_decay=0.1)
 
     # 4. Plot
     print("Generating Hero Chart...")
@@ -196,9 +197,9 @@ def main():
             last = smoothed_val
         return smoothed
 
-    plt.plot(smooth(losses_adam), label='AdamW (Baseline)', color='gray', alpha=0.5, linestyle='--')
+    plt.plot(smooth(losses_adam), label='AdamW (Stress Test)', color='gray', alpha=0.5, linestyle='--')
     plt.plot(smooth(losses_cruxy), label='Cruxy (Meta3)', color='blue', linewidth=2)
-    plt.plot(smooth(losses_lion), label='Cruxy (Meta-Lion)', color='red', linewidth=2)
+    plt.plot(smooth(losses_lion), label='Cruxy (Meta-Lion v2)', color='red', linewidth=2)
     
     plt.title('Training Stability: AdamW vs Cruxy vs Meta-Lion')
     plt.xlabel('Training Steps')
