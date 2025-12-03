@@ -221,9 +221,14 @@ class CruxyOptimizer(Optimizer):
                 if len(state) == 0:
                     state['step'] = 0
                     state['exp_avg'] = torch.zeros_like(p, memory_format=torch.preserve_format)
-                    state['exp_avg_sq'] = torch.zeros_like(p, memory_format=torch.preserve_format)
+                    # Only allocate variance buffer if NOT using Lion
+                    if not use_lion:
+                        state['exp_avg_sq'] = torch.zeros_like(p, memory_format=torch.preserve_format)
                 
-                exp_avg, exp_avg_sq = state['exp_avg'], state['exp_avg_sq']
+                exp_avg = state['exp_avg']
+                # exp_avg_sq might not exist in Lion mode
+                exp_avg_sq = state.get('exp_avg_sq') 
+                
                 state['step'] += 1
                 
                 # --- LION MODE ---
@@ -252,15 +257,19 @@ class CruxyOptimizer(Optimizer):
                     # Apply update
                     p.add_(update, alpha=-lr_t)
                     
-                    # Note: Lion doesn't use exp_avg_sq (variance), but we still track it
-                    # so the Controller can see the variance!
-                    # This is the "Meta-Lion" magic.
-                    exp_avg_sq.mul_(beta2_t).addcmul_(grad, grad, value=1 - beta2_t)
+                    # OPTIMIZATION: We DO NOT track exp_avg_sq in Lion mode.
+                    # The Controller calculates variance directly from gradients in the outer loop.
+                    # This saves 50% of optimizer memory (True Lion efficiency).
                     
                     continue
                 
                 # --- ADAM/CRUXY MODE ---
                 
+                # Ensure exp_avg_sq exists for Adam mode
+                if exp_avg_sq is None:
+                     exp_avg_sq = torch.zeros_like(p, memory_format=torch.preserve_format)
+                     state['exp_avg_sq'] = exp_avg_sq
+
                 # Decoupled Weight Decay (AdamW)
                 if weight_decay != 0:
                     if decoupled_wd:
