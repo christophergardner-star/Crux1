@@ -51,7 +51,7 @@ The following models have been verified to train on consumer hardware (GTX 1650,
 ## Installation
 
 ```bash
-pip install .
+pip install cruxy
 ```
 
 ## Usage

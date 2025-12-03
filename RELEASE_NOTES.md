@@ -44,7 +44,7 @@ Axiom Forge Systems is proud to release **Cruxy v2.0**, a drop-in replacement fo
 ### 🔧 Quick Start
 
 ```bash
-pip install cruxy-opt
+pip install cruxy
 ```
 
 ```python
