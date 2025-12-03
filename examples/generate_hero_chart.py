@@ -168,11 +168,13 @@ def main():
     
     # 1. Run AdamW (Baseline)
     # Standard settings: lr=1e-3 is common for this size
-    losses_adam = train_run("AdamW", torch.optim.AdamW, model_args, loader, device, steps=steps, lr=1e-3, weight_decay=0.1)
+    # STRESS TEST: We increase LR to 5e-3 to force instability. AdamW should struggle.
+    losses_adam = train_run("AdamW", torch.optim.AdamW, model_args, loader, device, steps=steps, lr=5e-3, weight_decay=0.1)
     
     # 2. Run Cruxy (Challenger)
+    # Cruxy should detect the high variance and throttle down automatically.
     losses_cruxy = train_run("Cruxy (Meta3)", CruxyOptimizer, model_args, loader, device, steps=steps, 
-                             lr=1e-3, mode="meta3", weight_decay=0.1, decoupled_weight_decay=True, use_nesterov=True)
+                             lr=5e-3, mode="meta3", weight_decay=0.1, decoupled_weight_decay=True, use_nesterov=True)
     
     # 3. Run Cruxy Meta-Lion (The Secret Weapon)
     # Lion typically needs 3x-10x lower LR than Adam. 
