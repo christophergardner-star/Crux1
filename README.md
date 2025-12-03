@@ -38,6 +38,7 @@ The Cruxy Stability Engine is an adaptive optimization framework for neural netw
 - **Meta-Optimization (Meta-Cruxy 3.0)**: Schedule-free training via hierarchical control of learning rate and momentum.
 - **Predictive Gradient Clipping**: Variance-informed clipping thresholds.
 - **Safety Guards**: Automatic NaN/Inf detection and hyperparameter clamping.
+- **Cluster Ready (Experimental)**: Supports `torch.compile` for high-performance training (untested on clusters).
 
 ## Installation
 

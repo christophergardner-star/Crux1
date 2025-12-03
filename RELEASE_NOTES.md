@@ -4,6 +4,7 @@
 **Date:** December 3, 2025
 
 ### 🚀 Major Breakthroughs
+*   **Cluster Ready (Experimental):** Added `compile=True` support for `torch.compile` (Triton/Inductor). *Note: This feature is currently untested on large-scale clusters.*
 *   **Meta-Lion Unleashed:** Tuned to match AdamW performance (Loss 1.66 vs 1.68) while using **1/3rd the memory**.
 *   **4GB VRAM Support:** Verified training of TinyLlama-1.1B on consumer hardware (GTX 1650 class).
 *   **Intelligence Fix:** Corrected Phase Modulation logic in `MetaCruxyController`, resulting in significantly lower loss.

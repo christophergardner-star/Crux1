@@ -4,6 +4,38 @@ from torch.optim import Optimizer
 from cruxy.controllers import CruxyV1Controller, CruxyV2Controller, MetaCruxyController
 from cruxy.utils.metrics import MetricsLogger
 
+# Standalone update functions for torch.compile support
+def _lion_update_fn(p, grad, exp_avg, lr, beta1, beta2, weight_decay):
+    if weight_decay != 0:
+        p.mul_(1 - lr * weight_decay)
+        
+    update = exp_avg.mul(beta1).add(grad, alpha=1 - beta1).sign()
+    exp_avg.mul_(beta2).add_(grad, alpha=1 - beta2)
+    p.add_(update, alpha=-lr)
+
+def _adam_update_fn(p, grad, exp_avg, exp_avg_sq, lr, beta1, beta2, eps, weight_decay, decoupled_wd, use_nesterov, step):
+    if weight_decay != 0:
+        if decoupled_wd:
+            p.mul_(1 - lr * weight_decay)
+        else:
+            grad = grad.add(p, alpha=weight_decay)
+    
+    exp_avg.mul_(beta1).add_(grad, alpha=1 - beta1)
+    exp_avg_sq.mul_(beta2).addcmul_(grad, grad, value=1 - beta2)
+    
+    denom = exp_avg_sq.sqrt().add_(eps)
+    
+    bias_correction1 = 1 - beta1 ** step
+    bias_correction2 = 1 - beta2 ** step
+    
+    step_size = lr * math.sqrt(bias_correction2) / bias_correction1
+    
+    if use_nesterov:
+        numerator = exp_avg.mul(beta1).add(grad, alpha=1 - beta1)
+        p.addcdiv_(numerator, denom, value=-step_size)
+    else:
+        p.addcdiv_(exp_avg, denom, value=-step_size)
+
 class CruxyOptimizer(Optimizer):
     """
     Cruxy Stability Engine Optimizer.
@@ -26,7 +58,8 @@ class CruxyOptimizer(Optimizer):
         meta_interval=10,
         gamma_norm=1.5,
         log_metrics=False,
-        metrics_path="./cruxy_metrics.jsonl"
+        metrics_path="./cruxy_metrics.jsonl",
+        compile=False
     ):
         defaults = dict(
             lr=lr, 
@@ -43,6 +76,21 @@ class CruxyOptimizer(Optimizer):
         self.mode = mode
         self.log_metrics = log_metrics
         self.metrics_logger = MetricsLogger(metrics_path) if log_metrics else None
+        
+        # Setup Update Functions (Compiled or Standard)
+        self.compile = compile
+        if compile:
+            # Advisory: This feature is experimental and untested on clusters
+            try:
+                self.lion_update = torch.compile(_lion_update_fn)
+                self.adam_update = torch.compile(_adam_update_fn)
+            except Exception as e:
+                print(f"Warning: torch.compile failed (falling back to standard): {e}")
+                self.lion_update = _lion_update_fn
+                self.adam_update = _adam_update_fn
+        else:
+            self.lion_update = _lion_update_fn
+            self.adam_update = _adam_update_fn
         
         # Initialize Controller
         if mode == "stability_v1":
@@ -233,34 +281,7 @@ class CruxyOptimizer(Optimizer):
                 
                 # --- LION MODE ---
                 if use_lion:
-                    # Lion Update:
-                    # 1. Decoupled Weight Decay
-                    if weight_decay != 0:
-                        p.mul_(1 - lr_t * weight_decay)
-                        
-                    # 2. Momentum Update (Lion uses interpolation)
-                    # c_t = beta1 * m_{t-1} + (1-beta1) * g_t
-                    # But Lion actually tracks m_t differently.
-                    # Lion: 
-                    #   update = sign(beta1 * m_{t-1} + (1-beta1) * g_t)
-                    #   m_t = beta2 * m_{t-1} + (1-beta2) * g_t
-                    
-                    # We use the controller's beta1/beta2
-                    # Note: Lion usually uses beta1=0.9, beta2=0.99
-                    
-                    # Compute update direction
-                    update = exp_avg.mul(beta1_t).add(grad, alpha=1 - beta1_t).sign()
-                    
-                    # Update momentum buffer
-                    exp_avg.mul_(beta2_t).add_(grad, alpha=1 - beta2_t)
-                    
-                    # Apply update
-                    p.add_(update, alpha=-lr_t)
-                    
-                    # OPTIMIZATION: We DO NOT track exp_avg_sq in Lion mode.
-                    # The Controller calculates variance directly from gradients in the outer loop.
-                    # This saves 50% of optimizer memory (True Lion efficiency).
-                    
+                    self.lion_update(p, grad, exp_avg, lr_t, beta1_t, beta2_t, weight_decay)
                     continue
                 
                 # --- ADAM/CRUXY MODE ---
@@ -270,31 +291,7 @@ class CruxyOptimizer(Optimizer):
                      exp_avg_sq = torch.zeros_like(p, memory_format=torch.preserve_format)
                      state['exp_avg_sq'] = exp_avg_sq
 
-                # Decoupled Weight Decay (AdamW)
-                if weight_decay != 0:
-                    if decoupled_wd:
-                        p.mul_(1 - lr_t * weight_decay)
-                    else:
-                        grad = grad.add(p, alpha=weight_decay)
-                
-                # Decay the first and second moment running average coefficient
-                exp_avg.mul_(beta1_t).add_(grad, alpha=1 - beta1_t)
-                exp_avg_sq.mul_(beta2_t).addcmul_(grad, grad, value=1 - beta2_t)
-                
-                denom = exp_avg_sq.sqrt().add_(eps)
-                
-                # Bias correction
-                bias_correction1 = 1 - beta1_t ** state['step']
-                bias_correction2 = 1 - beta2_t ** state['step']
-                
-                step_size = lr_t * math.sqrt(bias_correction2) / bias_correction1
-                
-                if use_nesterov:
-                    # Nesterov Momentum: Use (beta1 * m + (1-beta1) * g) instead of m
-                    numerator = exp_avg.mul(beta1_t).add(grad, alpha=1 - beta1_t)
-                    p.addcdiv_(numerator, denom, value=-step_size)
-                else:
-                    p.addcdiv_(exp_avg, denom, value=-step_size)
+                self.adam_update(p, grad, exp_avg, exp_avg_sq, lr_t, beta1_t, beta2_t, eps, weight_decay, decoupled_wd, use_nesterov, state['step'])
 
         # 6. Logging
         if self.log_metrics and self.metrics_logger:
