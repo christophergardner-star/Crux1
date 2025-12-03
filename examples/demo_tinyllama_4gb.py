@@ -63,6 +63,7 @@ def main():
     print("Starting training loop...")
     model.train()
     
+    losses = []
     start_time = time.time()
     for i in range(50):
         optimizer.zero_grad()
@@ -77,12 +78,29 @@ def main():
         # Step (Cruxy needs loss for curvature)
         optimizer.step(loss=loss.item())
         
+        losses.append(loss.item())
+        
         if i % 5 == 0:
             lr = optimizer.controller.current_lr if hasattr(optimizer, 'controller') else 1e-4
             print(f"Step {i} | Loss: {loss.item():.4f} | LR: {lr:.6f}")
 
     print(f"Finished in {time.time() - start_time:.2f}s")
     print("Success! The model trained on your 4GB card.")
+    
+    # 6. Generate Chart
+    try:
+        import matplotlib.pyplot as plt
+        plt.figure(figsize=(10, 6))
+        plt.plot(losses, label='Cruxy Meta-Lion (TinyLlama)', color='red', linewidth=2)
+        plt.title('TinyLlama-1.1B Training on 4GB VRAM')
+        plt.xlabel('Steps')
+        plt.ylabel('Loss')
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        plt.savefig('tinyllama_chart.png')
+        print("Chart saved to tinyllama_chart.png")
+    except ImportError:
+        print("Matplotlib not installed, skipping chart generation.")
 
 if __name__ == "__main__":
     main()
