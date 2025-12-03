@@ -14,9 +14,9 @@ The Cruxy Stability Engine is an adaptive optimization framework for neural netw
 
 | Optimizer | Final Loss | Time | Memory | Notes |
 |-----------|------------|------|--------|-------|
-| **Cruxy (Meta3)** | **1.6661** | 26s | Standard | **Most Intelligent** (Beat AdamW) |
+| **Cruxy (Meta3)** | **1.6413** | 26s | Standard | **Most Intelligent** (Beat AdamW) |
 | AdamW (Baseline) | 1.6843 | 10s | Standard | Baseline |
-| **Cruxy (Meta-Lion)** | 1.6925 | 26s | **Low (1/3x)** | **Best for 4GB Cards** (Stable @ LR=1e-3) |
+| **Cruxy (Meta-Lion)** | **1.6633** | 26s | **Low (1/3x)** | **Best for 4GB Cards** (Stable @ LR=1e-3) |
 
 *Note: Meta-Lion achieved near-parity with AdamW while using significantly less memory, enabling LLM training on consumer hardware.*
 
