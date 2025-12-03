@@ -118,9 +118,9 @@ def run_experiment(config):
     print(json.dumps(config, indent=2))
     
     # Setup Device
-    device = "cpu" # Forcing CPU as requested
-    if torch.cuda.is_available() and config.get('use_cuda', False):
-        device = "cuda"
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    if config.get('force_cpu', False):
+        device = "cpu"
     print(f"Device: {device}")
 
     # Model
