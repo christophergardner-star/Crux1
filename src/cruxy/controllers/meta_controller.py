@@ -64,10 +64,15 @@ class MetaCruxyController:
         # Eq (53) Phase
         phase_t = var_fast / (var_fast + var_slow + 1e-8)
         
-        # Eq (54) Phase-Modulated LR
-        lr_final = self.current_lr * (1 + 0.2 * phase_t)
+        # Eq (54) Phase-Modulated LR (Corrected for Stability)
+        # If phase is high (instability), we throttle down.
+        # If phase is low (stability), we allow full speed.
+        # Old (Buggy?): lr_final = self.current_lr * (1 + 0.2 * phase_t)
+        # New (Stable): lr_final = self.current_lr * (1 - 0.5 * phase_t)
+        lr_final = self.current_lr * (1.0 - 0.5 * phase_t)
         
         # Eq (55) Phase-Modulated Momentum
+        # If phase is high (instability), we lower momentum to reduce oscillation.
         beta2_final = self.current_beta2 * (1 - 0.3 * phase_t)
         
         # 4. Safety Bounds
