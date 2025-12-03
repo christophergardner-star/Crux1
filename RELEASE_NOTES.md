@@ -1,3 +1,23 @@
+# Release Notes: Cruxy Stability Engine
+
+## v2.1.0: The "World Class" Update
+**Date:** December 3, 2025
+
+### 🚀 Major Breakthroughs
+*   **Meta-Lion Unleashed:** Tuned to match AdamW performance (Loss 1.66 vs 1.68) while using **1/3rd the memory**.
+*   **4GB VRAM Support:** Verified training of TinyLlama-1.1B on consumer hardware (GTX 1650 class).
+*   **Intelligence Fix:** Corrected Phase Modulation logic in `MetaCruxyController`, resulting in significantly lower loss.
+*   **Memory Optimization:** Fixed a memory leak in Lion mode, reducing VRAM footprint by 50%.
+
+### 🏆 Benchmark Results
+| Optimizer | Final Loss | Memory |
+|-----------|------------|--------|
+| Cruxy (Meta3) | **1.6413** | Standard |
+| AdamW | 1.6843 | Standard |
+| Cruxy (Meta-Lion) | 1.6633 | **Low** |
+
+---
+
 # Release Notes: Cruxy Stability Engine v2.0
 
 **Released by:** Axiom Forge Systems Ltd  

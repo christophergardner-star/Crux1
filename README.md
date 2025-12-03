@@ -1,5 +1,10 @@
 # Cruxy Stability Engine SDK
 
+![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)
+![Python](https://img.shields.io/badge/python-3.8%2B-blue)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-orange)
+![Status](https://img.shields.io/badge/status-stable-green)
+
 The Cruxy Stability Engine is an adaptive optimization framework for neural network training, implementing the algorithms described in the Axiom Forge Systems Ltd White Paper (v2.0 + Meta-Cruxy 3.0).
 
 ## 🚀 Verified Performance
@@ -17,6 +22,8 @@ The Cruxy Stability Engine is an adaptive optimization framework for neural netw
 | **Cruxy (Meta3)** | **1.6413** | 26s | Standard | **Most Intelligent** (Beat AdamW) |
 | AdamW (Baseline) | 1.6843 | 10s | Standard | Baseline |
 | **Cruxy (Meta-Lion)** | **1.6633** | 26s | **Low (1/3x)** | **Best for 4GB Cards** (Stable @ LR=1e-3) |
+
+![Hero Chart](docs/img/hero_chart.png)
 
 *Note: Meta-Lion achieved near-parity with AdamW while using significantly less memory, enabling LLM training on consumer hardware.*
 

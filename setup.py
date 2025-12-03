@@ -5,16 +5,15 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="cruxy-opt",
-    version="2.0.0",
+    version="2.1.0",
     author="Axiom Forge Systems Ltd",
     author_email="dev@axiomforge.ai",
     description="The Cruxy Stability Engine: Adaptive Optimization for PyTorch",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/axiomforge/cruxy", 
+    url="https://github.com/christophergardner-star/Crux1", 
     project_urls={
-        "Bug Tracker": "https://github.com/axiomforge/cruxy/issues",
-        "Company": "https://axiomforge.ai",
+        "Bug Tracker": "https://github.com/christophergardner-star/Crux1/issues",
     },
     classifiers=[
         "Development Status :: 4 - Beta",
