@@ -27,6 +27,16 @@ The Cruxy Stability Engine is an adaptive optimization framework for neural netw
 | **SmolLM2** | 1.7B | ✅ Verified | 500-step stability test passed |
 | **Phi-2** | 2.7B | ✅ Verified | - |
 | **Qwen 2.5** | 7B | ✅ Verified | 99.5% loss reduction, matches AdamW |
+| **Qwen 2.5** | 14B | ✅ Verified | 123GB VRAM, 100% loss reduction |
+
+### Cruxy vs AdamW (H200)
+
+| Model | Optimizer | Initial Loss | Final Loss | Reduction |
+|-------|-----------|--------------|------------|-----------|
+| Qwen 2.5 7B | **Cruxy** | 5.47 | 0.025 | **99.5%** |
+| Qwen 2.5 7B | AdamW | 5.47 | 0.026 | 99.5% |
+| SmolLM2 1.7B (500 steps) | **Cruxy** | 4.75 | 0.040 | **99.2%** |
+| SmolLM2 1.7B (500 steps) | AdamW | 4.75 | 0.041 | 99.1% |
 
 ### 4GB VRAM (Consumer Hardware)
 *Verified on GTX 1650, December 2025*
