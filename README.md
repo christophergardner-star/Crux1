@@ -15,6 +15,8 @@
 
 The Cruxy Stability Engine is an adaptive optimization framework for neural network training, implementing the algorithms described in the Axiom Forge Systems Ltd White Paper (v2.0 + Meta-Cruxy 3.0).
 
+> **Note:** Additional validation testing has been conducted since the white paper was published, including successful training runs on models up to 14B parameters on NVIDIA H200 hardware.
+
 ## 🚀 Verified Performance
 
 ### H200 Benchmarks (141GB VRAM)
