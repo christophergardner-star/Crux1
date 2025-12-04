@@ -3,7 +3,7 @@
 </p>
 
 > **Train 1.5B parameter models on a 4GB GPU. No scheduler tuning required.**  
-> *White paper available on request.*
+> *[Read the White Paper (v2.1)](docs/Cruxy_Stability_Engine_Whitepaper_v2.1.pdf)*
 
 # Cruxy Stability Engine SDK
 
