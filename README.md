@@ -11,6 +11,7 @@
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-orange)
 ![Status](https://img.shields.io/badge/status-stable-green)
+[![Whitepaper](https://img.shields.io/badge/Whitepaper-Read_PDF-b31b1b?logo=adobeacrobatreader&logoColor=white)](docs/Cruxy_Stability_Engine_Whitepaper_v2.1.pdf)
 
 The Cruxy Stability Engine is an adaptive optimization framework for neural network training, implementing the algorithms described in the Axiom Forge Systems Ltd White Paper (v2.0 + Meta-Cruxy 3.0).
 
