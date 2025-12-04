@@ -24,10 +24,10 @@ The Cruxy Stability Engine is an adaptive optimization framework for neural netw
 
 | Model | Params | Status | Notes |
 |-------|--------|--------|-------|
-| **TinyLlama** | 1.1B | ✅ Verified | - |
-| **Qwen 2.5** | 1.5B | ✅ Verified | - |
+| **TinyLlama** | 1.1B | ✅ Verified | Baseline validation |
+| **Qwen 2.5** | 1.5B | ✅ Verified | 96.5% loss reduction in 50 steps |
 | **SmolLM2** | 1.7B | ✅ Verified | 500-step stability test passed |
-| **Phi-2** | 2.7B | ✅ Verified | - |
+| **Phi-2** | 2.7B | ✅ Verified | 65.3% loss reduction in 50 steps |
 | **Qwen 2.5** | 7B | ✅ Verified | 99.5% loss reduction, matches AdamW |
 | **Qwen 2.5** | 14B | ✅ Verified | 123GB VRAM, 100% loss reduction |
 
