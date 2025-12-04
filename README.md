@@ -15,8 +15,21 @@
 
 The Cruxy Stability Engine is an adaptive optimization framework for neural network training, implementing the algorithms described in the Axiom Forge Systems Ltd White Paper (v2.0 + Meta-Cruxy 3.0).
 
-## 🚀 Verified Performance (4GB VRAM)
-The following models have been verified to train on consumer hardware (GTX 1650, 4GB VRAM) using **Cruxy Meta-Lion** + LoRA.
+## 🚀 Verified Performance
+
+### H200 Benchmarks (141GB VRAM)
+*Verified on NVIDIA H200, December 2025*
+
+| Model | Params | Status | Notes |
+|-------|--------|--------|-------|
+| **TinyLlama** | 1.1B | ✅ Verified | - |
+| **Qwen 2.5** | 1.5B | ✅ Verified | - |
+| **SmolLM2** | 1.7B | ✅ Verified | 500-step stability test passed |
+| **Phi-2** | 2.7B | ✅ Verified | - |
+| **Qwen 2.5** | 7B | ✅ Verified | 99.5% loss reduction, matches AdamW |
+
+### 4GB VRAM (Consumer Hardware)
+*Verified on GTX 1650, December 2025*
 
 | Model | Params | Config | Status | Demo Script |
 |-------|--------|--------|--------|-------------|
