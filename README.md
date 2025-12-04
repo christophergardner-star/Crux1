@@ -46,12 +46,19 @@ The Cruxy Stability Engine is an adaptive optimization framework for neural netw
 | Model | GPUs | Batch | Initial Loss | Final Loss | Reduction | Time |
 |-------|------|-------|--------------|------------|-----------|------|
 | **Qwen 2.5 7B** | 8x A100-80GB | 16 | 3.16 | 0.19 | **94.1%** | 9.2s |
+| **Qwen 2.5 14B** | 8x A100-80GB | 8 | 5.65 | 0.64 | **88.7%** | 10.2s |
 
-**Configuration:**
+**DDP Configuration (7B):**
 - Framework: PyTorch DDP (DistributedDataParallel)
 - Backend: NCCL
-- Memory per GPU: 64.4GB peak (80GB available)
-- Performance: 0.61s/step (15 steps total)
+- Memory per GPU: 64.4GB peak
+- Performance: 0.61s/step
+
+**Model Parallel Configuration (14B):**
+- Framework: HuggingFace device_map='auto'
+- Distribution: Pipeline parallelism across 8 GPUs
+- Memory: ~120GB total (15GB peak per GPU)
+- Performance: 0.68s/step
 
 ### 4GB VRAM (Consumer Hardware)
 *Verified on GTX 1650, December 2025*
