@@ -73,17 +73,17 @@ The Cruxy Stability Engine is an adaptive optimization framework for neural netw
 *Note: 4-bit quantization requires `bitsandbytes`. Without it, models >1.5B may require CPU offloading.*
 
 ## 🏆 Benchmark Results (Shakespeare GPT)
-*Verified on NVIDIA GPU (Dec 2025)*
+*NanoGPT on Tiny Shakespeare - 1000 steps, stress test LR=5e-3 (December 2025)*
 
 | Optimizer | Final Loss | Time | Memory | Notes |
 |-----------|------------|------|--------|-------|
-| **Cruxy (Meta3)** | **1.6413** | 26s | Standard | **Most Intelligent** (Beat AdamW) |
-| AdamW (Baseline) | 1.6843 | 10s | Standard | Baseline |
-| **Cruxy (Meta-Lion)** | **1.6633** | 26s | **Low (1/3x)** | **Best for 4GB Cards** (Stable @ LR=1e-3) |
+| **Cruxy (Meta3)** | **1.6415** | 129s | Standard | **Best Loss** (Beat AdamW) |
+| **Cruxy (Meta-Lion)** | **1.6627** | 164s | **Low (1/3x)** | **Best for 4GB Cards** |
+| AdamW (Baseline) | 1.6839 | 105s | Standard | Baseline |
 
 ![Hero Chart](docs/img/hero_chart.png)
 
-*Note: Meta-Lion achieved near-parity with AdamW while using significantly less memory, enabling LLM training on consumer hardware.*
+*Chart shows smoothed training curves. All optimizers used stress-test learning rate (5e-3) to demonstrate stability. Meta-Lion uses lower LR (1e-3) with higher weight decay, trading speed for memory efficiency.*
 
 ## Features
 
