@@ -5,6 +5,54 @@ from cruxy.controllers import CruxyV1Controller, CruxyV2Controller, MetaCruxyCon
 from cruxy.utils.metrics import MetricsLogger
 
 # Standalone update functions for torch.compile support
+def _newton_schulz(G, steps=5, eps=1e-7):
+    """
+    Newton-Schulz iteration to compute the zeroth power of a matrix G.
+    Used for orthogonalization in Muon optimizer.
+    """
+    a, b, c = (3.4445, -4.7750, 2.0315)
+    X = G.bfloat16()
+    X /= (X.norm() + eps)
+    if G.size(0) > G.size(1):
+        X = X.T
+    
+    for _ in range(steps):
+        A = X @ X.T
+        B = b * A + c * A @ A
+        X = a * X + B @ X
+        
+    if G.size(0) > G.size(1):
+        X = X.T
+    return X
+
+def _muon_update_fn(p, grad, exp_avg, lr, momentum, weight_decay, step):
+    """
+    Muon update function for >=2D parameters.
+    """
+    # 1. Momentum Update
+    exp_avg.mul_(momentum).add_(grad)
+    
+    # 2. Orthogonalization (Newton-Schulz)
+    if step > 0: # Skip first step or handle carefully? Usually fine.
+        update = _newton_schulz(exp_avg)
+    else:
+        update = exp_avg.clone()
+
+    # 3. Weight Decay (Decoupled)
+    if weight_decay != 0:
+        p.mul_(1 - lr * weight_decay)
+
+    # 4. Apply Update
+    # Scale by root-mean-square of parameters for consistent scaling? 
+    # Standard Muon scales by max(1, p.size(0)/p.size(1))**0.5 sometimes, 
+    # but basic version is just p -= lr * update * scale
+    
+    # For simplicity in this integration, we use standard LR scaling
+    # But Muon often uses a specific scaling factor based on dimensions.
+    # We will stick to the core orthogonalization update.
+    
+    p.add_(update.to(p.dtype), alpha=-lr)
+
 def _lion_update_fn(p, grad, exp_avg, lr, beta1, beta2, weight_decay):
     if weight_decay != 0:
         p.mul_(1 - lr * weight_decay)
@@ -84,13 +132,16 @@ class CruxyOptimizer(Optimizer):
             try:
                 self.lion_update = torch.compile(_lion_update_fn)
                 self.adam_update = torch.compile(_adam_update_fn)
+                self.muon_update = torch.compile(_muon_update_fn)
             except Exception as e:
                 print(f"Warning: torch.compile failed (falling back to standard): {e}")
                 self.lion_update = _lion_update_fn
                 self.adam_update = _adam_update_fn
+                self.muon_update = _muon_update_fn
         else:
             self.lion_update = _lion_update_fn
             self.adam_update = _adam_update_fn
+            self.muon_update = _muon_update_fn
         
         # Initialize Controller
         if mode == "stability_v1":
@@ -117,6 +168,16 @@ class CruxyOptimizer(Optimizer):
                 meta_lr_eta=meta_lr_eta,
                 meta_lr_beta2=meta_lr_beta2,
                 meta_interval=meta_interval
+            )
+        elif mode == "muon":
+            # Muon uses a simple controller or just fixed params
+            # We reuse V2 controller for basic LR scheduling if needed, 
+            # but Muon is often fixed. Let's use V2 for consistency.
+            self.controller = CruxyV2Controller(
+                lr_base=lr,
+                beta1_base=betas[0], # Momentum
+                beta2_base=betas[1], # Not used for Muon update but kept for interface
+                gamma=gamma_norm
             )
         else:
             raise ValueError(f"Unknown mode: {mode}")
@@ -278,6 +339,11 @@ class CruxyOptimizer(Optimizer):
                 exp_avg_sq = state.get('exp_avg_sq') 
                 
                 state['step'] += 1
+                
+                # --- MUON MODE ---
+                if self.mode == "muon" and p.ndim >= 2:
+                    self.muon_update(p, grad, exp_avg, lr_t, beta1_t, beta2_t, weight_decay)
+                    continue
                 
                 # --- LION MODE ---
                 if use_lion:

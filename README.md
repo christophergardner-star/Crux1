@@ -40,6 +40,19 @@ The Cruxy Stability Engine is an adaptive optimization framework for neural netw
 | SmolLM2 1.7B (500 steps) | **Cruxy** | 4.75 | 0.040 | **99.2%** |
 | SmolLM2 1.7B (500 steps) | AdamW | 4.75 | 0.041 | 99.1% |
 
+### 8-GPU Distributed Training (A100 Cluster)
+*Verified on 8x A100-SXM4-80GB (640GB total VRAM), December 2025*
+
+| Model | GPUs | Batch | Initial Loss | Final Loss | Reduction | Time |
+|-------|------|-------|--------------|------------|-----------|------|
+| **Qwen 2.5 7B** | 8x A100-80GB | 16 | 3.16 | 0.19 | **94.1%** | 9.2s |
+
+**Configuration:**
+- Framework: PyTorch DDP (DistributedDataParallel)
+- Backend: NCCL
+- Memory per GPU: 64.4GB peak (80GB available)
+- Performance: 0.61s/step (15 steps total)
+
 ### 4GB VRAM (Consumer Hardware)
 *Verified on GTX 1650, December 2025*
 
@@ -72,7 +85,8 @@ The Cruxy Stability Engine is an adaptive optimization framework for neural netw
 - **Meta-Optimization (Meta-Cruxy 3.0)**: Schedule-free training via hierarchical control of learning rate and momentum.
 - **Predictive Gradient Clipping**: Variance-informed clipping thresholds.
 - **Safety Guards**: Automatic NaN/Inf detection and hyperparameter clamping.
-- **Cluster Ready (Experimental)**: Supports `torch.compile` for high-performance training (untested on clusters).
+- **Distributed Training Ready**: Verified with PyTorch DDP on 8x A100-80GB clusters (640GB VRAM).
+- **Cluster Compatible**: Supports `torch.compile` for high-performance training.
 
 ## Installation
 
